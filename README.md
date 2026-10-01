@@ -183,8 +183,8 @@ Tek sınıfta mAP@50 = 0,994, Precision ve Recall ≈ 0,99. Plaka bölgesi tespi
 ## Kurulum
 
 ```bash
-git clone https://github.com/furkancmc/TEKNOFEST-5G-Yapay-Zeka.git
-cd TEKNOFEST-5G-Yapay-Zeka
+git clone https://github.com/furkancmc/teknofest-5g-yol-guvenligi.git
+cd teknofest-5g-yol-guvenligi
 
 python -m venv .venv
 # Windows
