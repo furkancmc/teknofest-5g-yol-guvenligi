@@ -1,4 +1,4 @@
-# 🚗 Araç Tespit Modeli — Eğitim
+# Araç Tespit Modeli — Eğitim
 
 Bu klasör, **YOLOv8m** tabanlı final araç tespit modelinin (ve ona giden ön denemelerin) eğitim betiklerini içerir. Proje geneli için [ana README](../README.md)'ye bakın.
 
@@ -58,4 +58,4 @@ python predict_test_samples.py     # örnek test görselleri üzerinde tahmin
 
 - GPU belleği yetmezse `final_train_vehicle.py` içinde `batch` değerini 8'e düşürün.
 - Eğitim çıktıları (`runs/`, `logs/`, `subset*/`) ve ağırlıklar `.gitignore` ile depo dışında tutulur.
-- Sonuçlar, deney tablosu ve grafikler için ana README'nin [Sonuçlar](../README.md#-sonuçlar) bölümüne bakın.
+- Sonuçlar, deney tablosu ve grafikler için ana README'nin [Sonuçlar](../README.md#sonuçlar) bölümüne bakın.

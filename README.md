@@ -1,40 +1,36 @@
-# 🚦 5G & Yapay Zekâ ile Akıllı Yol Güvenliği
-
-<div align="center">
+# 5G & Yapay Zekâ ile Akıllı Yol Güvenliği
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)
 ![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-red)
 ![OpenCV](https://img.shields.io/badge/OpenCV-4.8%2B-green?logo=opencv)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange?logo=pytorch)
 
-**Video akışından araç, plaka ve riskli trafik durumu tespiti yapan, 5G uyarı katmanına sahip yol güvenliği prototipi**
+Video akışından araç, plaka ve riskli trafik durumu tespiti yapan, 5G uyarı katmanına sahip bir yol güvenliği prototipi.
 
-</div>
-
-> Bu depo, **TEKNOFEST — 5G & Yapay Zekâ ile Akıllı Yol Güvenliği Yarışması** kapsamında hazırlanan çözümün kaynak kodunu içerir.
+Bu depo, TEKNOFEST 5G & Yapay Zekâ ile Akıllı Yol Güvenliği Yarışması için hazırlanan çözümün kaynak kodunu içerir.
 
 ---
 
-## 📋 İçindekiler
+## İçindekiler
 
-- [Proje Özeti](#-proje-özeti)
-- [Çözüm Mimarisi](#-çözüm-mimarisi)
-- [Veri Seti](#-veri-seti)
-- [Model Eğitimi](#-model-eğitimi)
-- [Sonuçlar](#-sonuçlar)
-- [Kurulum](#-kurulum)
-- [Kullanım](#-kullanım)
-- [Çıktı Formatı](#-çıktı-formatı)
-- [Yapılandırma ve Risk Skoru](#-yapılandırma-ve-risk-skoru)
-- [Dosya Yapısı](#-dosya-yapısı)
-- [Sınırlılıklar](#-sınırlılıklar)
-- [Kaynakça ve Veri Seti Atıfları](#-kaynakça-ve-veri-seti-atıfları)
+- [Proje Özeti](#proje-özeti)
+- [Çözüm Mimarisi](#çözüm-mimarisi)
+- [Veri Seti](#veri-seti)
+- [Model Eğitimi](#model-eğitimi)
+- [Sonuçlar](#sonuçlar)
+- [Kurulum](#kurulum)
+- [Kullanım](#kullanım)
+- [Çıktı Formatı](#çıktı-formatı)
+- [Yapılandırma ve Risk Skoru](#yapılandırma-ve-risk-skoru)
+- [Dosya Yapısı](#dosya-yapısı)
+- [Sınırlılıklar](#sınırlılıklar)
+- [Kaynakça ve Veri Seti Atıfları](#kaynakça-ve-veri-seti-atıfları)
 
 ---
 
-## 🎯 Proje Özeti
+## Proje Özeti
 
-Sistem; 5G destekli akıllı yol güvenliği senaryolarında video akışından araç, plaka ve riskli trafik durumlarını tespit eder. Aşağıdaki bileşenleri tek akışta birleştirir:
+Sistem, 5G destekli yol güvenliği senaryolarında video akışından araç, plaka ve riskli trafik durumlarını tespit eder. Şu parçaları tek akışta birleştirir:
 
 - Araç tespiti (YOLOv8m) ve bağımsız plaka tespiti (YOLOv8s)
 - Çoklu nesne takibi (ByteTrack + Kalman filtresi)
@@ -43,17 +39,17 @@ Sistem; 5G destekli akıllı yol güvenliği senaryolarında video akışından 
 - 0–100 arası çok faktörlü risk skoru
 - Eşik aşımında 5G uyarı çıktısı ve zaman damgalı olay kaydı (CSV + JSON)
 
-Bileşenlerin güvenilirlik seviyesi birbirinden farklıdır ve bilinçli olarak ayrı tutulmuştur:
+Bileşenlerin ne kadar doğrulandığı birbirinden farklı, o yüzden ayrı ayrı yazıyorum:
 
 | Katman | Bileşen | Durum |
 |---|---|---|
-| **Çekirdek** | Araç tespiti, plaka tespiti, ByteTrack + Kalman takibi | Ayrılmış değerlendirme setlerinde metriklerle doğrulandı |
-| **İleri analiz** | Homografi / piksel-metre dönüşümü, hız, mesafe, şerit, yoğunluk, risk skoru | Video üzerinde fonksiyonel olarak çalışıyor; sayısal doğruluk **kamera kalibrasyonuna bağlı** |
-| **Uyarı** | 5G olay aktarımı | Eşik aşımı, zaman damgalı log ve uyarı **tasarımı**; gecikme alanı (`latency_ms`) simüle edilmiş sabit değerdir, gerçek bir 5G bağlantısı kurulmamıştır |
+| Çekirdek | Araç tespiti, plaka tespiti, ByteTrack + Kalman takibi | Ayrılmış değerlendirme setlerinde metriklerle doğrulandı |
+| İleri analiz | Homografi / piksel-metre dönüşümü, hız, mesafe, şerit, yoğunluk, risk skoru | Video üzerinde fonksiyonel olarak çalışıyor; sayısal doğruluk kamera kalibrasyonuna bağlı |
+| Uyarı | 5G olay aktarımı | Eşik aşımı, zaman damgalı log ve uyarı tasarımı; gecikme alanı (`latency_ms`) simüle edilmiş sabit değerdir, gerçek bir 5G bağlantısı kurulmamıştır |
 
 ---
 
-## 🏗️ Çözüm Mimarisi
+## Çözüm Mimarisi
 
 <p align="center">
   <img src="docs/images/mimari.png" alt="Çözüm mimarisi" width="560">
@@ -62,18 +58,18 @@ Bileşenlerin güvenilirlik seviyesi birbirinden farklıdır ve bilinçli olarak
 Koyu mavi bloklar doğrulanmış çekirdek (tespit + takip), turuncu bloklar ileri trafik analizi katmanıdır.
 
 1. Video kareleri alınır ve ön işlenir (eğitim çözünürlüğü 640×640; `traffic_pipeline.py` çıkarımı 1280 piksel genişlikte yapar).
-2. **YOLOv8m** araçları (`car`, `motorcycle`, `truck`, `bus`), ayrı bir **YOLOv8s** modeli plakaları (`license_plate`) tespit eder.
+2. YOLOv8m araçları (`car`, `motorcycle`, `truck`, `bus`), ayrı bir YOLOv8s modeli plakaları (`license_plate`) tespit eder.
 3. Güven skoru ve NMS (IoU) ile filtreleme yapılır.
-4. **ByteTrack** her araca benzersiz Track ID verir; **8 boyutlu Kalman filtresi** (`cx, cy, w, h, vx, vy, vw, vh`) kutu titremesini azaltır ve kısa süreli kayıplarda iz sürekliliğini korur.
-5. Araç boyutlarından piksel→metre ölçeği tahmin edilir; Lucas-Kanade optik akış ve Kalman hızı birleştirilerek **hız** hesaplanır.
-6. Araç çiftleri arasında **mesafe** ve hareket yönüne göre **TTC** hesaplanır; **şerit ihlali** boyalı şerit (Hough) veya rota sapması ile tespit edilir.
-7. Faktörler **risk skoruna** dönüştürülür; eşik aşımında **5G uyarısı** ve **olay kaydı** üretilir.
+4. ByteTrack her araca benzersiz Track ID verir; 8 boyutlu Kalman filtresi (`cx, cy, w, h, vx, vy, vw, vh`) kutu titremesini azaltır ve kısa süreli kayıplarda iz sürekliliğini korur.
+5. Araç boyutlarından piksel→metre ölçeği tahmin edilir; Lucas-Kanade optik akış ve Kalman hızı birleştirilerek hız hesaplanır.
+6. Araç çiftleri arasında mesafe ve hareket yönüne göre TTC hesaplanır; şerit ihlali boyalı şerit (Hough) veya rota sapması ile tespit edilir.
+7. Faktörler risk skoruna dönüştürülür; eşik aşımında 5G uyarısı ve olay kaydı üretilir.
 
 ---
 
-## 🗂️ Veri Seti
+## Veri Seti
 
-Araç tespiti için **altı açık kaynaklı veri seti** tek bir YOLO yapısında birleştirilmiştir (`vehicle_merger.py`). Veri seçiminde yarışma videolarında beklenen kamera açısı, gece/gündüz aydınlatması, trafik yoğunluğu, hareket bulanıklığı ve oklüzyon koşulları dikkate alınmıştır.
+Araç tespiti için altı açık kaynaklı veri seti tek bir YOLO yapısında birleştirilmiştir (`vehicle_merger.py`). Veri seçiminde yarışma videolarında beklenen kamera açısı, gece/gündüz aydınlatması, trafik yoğunluğu, hareket bulanıklığı ve oklüzyon koşulları dikkate alınmıştır.
 
 | Veri grubu | Kaynak | Görsel | Kullanım amacı |
 |---|---|---:|---|
@@ -84,7 +80,7 @@ Araç tespiti için **altı açık kaynaklı veri seti** tek bir YOLO yapısınd
 | Araç | Vehicles-COCO.v2i.yolov8 + vehicle.v5i | 19.929 | Sınıf çeşitliliği ve eksik örnek desteği |
 | Plaka | licenseplate2 + Vehicle Registration Plates.v2 | 7.941 | Tek sınıflı plaka bölgesi tespiti |
 
-**Birleşik araç veri seti: 57.664 görsel, 353.972 anotasyon.**
+Birleşik araç veri seti: 57.664 görsel, 353.972 anotasyon.
 
 | Küme | Görsel | Oran | Kullanım |
 |---|---:|---:|---|
@@ -96,15 +92,15 @@ Araç tespiti için **altı açık kaynaklı veri seti** tek bir YOLO yapısınd
 
 - Farklı kaynaklardaki sınıf adları ve YOLO etiket numaraları tek sözlüğe dönüştürüldü (`vehicle_merger.py`, `plate_merger.py`).
 - 389 boş/eksik etiketli görsel ve proje kapsamı dışındaki sınıflar eğitimden çıkarıldı.
-- Düşük örnekli **van** sınıfı (3.261 anotasyon, %0,9), otomobille yüksek görsel benzerliği nedeniyle **car** ile birleştirildi; final model **4 sınıfta** (`car`, `motorcycle`, `truck`, `bus`) eğitildi.
+- Düşük örnekli van sınıfı (3.261 anotasyon, %0,9), otomobille yüksek görsel benzerliği nedeniyle car ile birleştirildi; final model 4 sınıfta (`car`, `motorcycle`, `truck`, `bus`) eğitildi.
 - Aynı görüntünün veya ondan türetilmiş varyasyonların farklı kümelere düşmemesine (veri sızıntısı) dikkat edildi; plaka veri setleri araç setinden bağımsız olarak aynı ilkeyle ayrıldı.
 - Sınıf dengesizliği iki aşamada yönetildi: sınıf dengeli alt küme seçimi ve eğitim sırasında Copy-Paste / MixUp.
 
 ---
 
-## 🧠 Model Eğitimi
+## Model Eğitimi
 
-Ön denemelerde YOLOv8s gerçek zamanlı çalışmış ancak doğruluk sınırlı kalmış, YOLOv8l ise donanım yükü nedeniyle tercih edilmemiştir. Doğruluk–hız dengesi için **YOLOv8m** final araç modeli seçilmiş; eğitim COCO ön eğitimli `yolov8m.pt` ağırlıklarından transfer öğrenme ile yapılmıştır.
+Ön denemelerde YOLOv8s gerçek zamanlı çalışmış ancak doğruluk sınırlı kalmış, YOLOv8l ise donanım yükü nedeniyle tercih edilmemiştir. Doğruluk–hız dengesi için YOLOv8m final araç modeli seçilmiş; eğitim COCO ön eğitimli `yolov8m.pt` ağırlıklarından transfer öğrenme ile yapılmıştır.
 
 ### Araç modeli hiperparametreleri
 
@@ -117,7 +113,7 @@ Araç tespiti için **altı açık kaynaklı veri seti** tek bir YOLO yapısınd
 | NMS IoU (değerlendirme) | 0,7 | Hassasiyet | AMP / FP16 |
 | Donanım | RTX 4060 8 GB, Ryzen 7 7700, 40 GB RAM | | |
 
-Eğitim betiği ([`final_train_vehicle.py`](training_vehicle_model/final_train_vehicle.py)) varsayılan olarak eğitim setinden **sınıf dengeli ~23.000 görsellik** bir alt küme kullanır (`--full` ile tüm eğitim seti); doğrulama tam doğrulama seti üzerinde yapılır.
+Eğitim betiği ([`final_train_vehicle.py`](training_vehicle_model/final_train_vehicle.py)) varsayılan olarak eğitim setinden sınıf dengeli ~23.000 görsellik bir alt küme kullanır (`--full` ile tüm eğitim seti); doğrulama tam doğrulama seti üzerinde yapılır.
 
 ### Veri artırma
 
@@ -133,11 +129,11 @@ Eğitim betiği ([`final_train_vehicle.py`](training_vehicle_model/final_train_v
 
 ### Plaka modeli
 
-Bağımsız **YOLOv8s**, tek sınıf (`license_plate`), 640×640, 100 epoch, batch 20, AdamW. Plakaya özel artırma (daha yüksek rotasyon/perspektif) kullanılır. Ayrıntı: [`training_plate_model/README.md`](training_plate_model/README.md).
+Bağımsız YOLOv8s, tek sınıf (`license_plate`), 640×640, 100 epoch, batch 20, AdamW. Plakaya özel artırma (daha yüksek rotasyon/perspektif) kullanılır. Ayrıntı: [`training_plate_model/README.md`](training_plate_model/README.md).
 
 ---
 
-## 📊 Sonuçlar
+## Sonuçlar
 
 ### Araç modeli (ayrılmış değerlendirme seti)
 
@@ -146,13 +142,13 @@ Bağımsız **YOLOv8s**, tek sınıf (`license_plate`), 640×640, 100 epoch, bat
 | Precision | 0,721 |
 | Recall | 0,632 |
 | F1-Score | 0,674 |
-| mAP@50 | **0,696** |
+| mAP@50 | 0,696 |
 | mAP@50-95 | 0,474 |
 | Çıkarım hızı | ~7,5 ms / kare (~130 FPS) |
 
 F1, Precision ve Recall'dan `F1 = 2·P·R / (P+R)` ile hesaplanmıştır. Nesne tespitinde klasik accuracy uygun olmadığından doğruluk göstergesi olarak mAP@50, mAP@50-95 ve F1 birlikte verilmiştir.
 
-**Sınıf bazlı AP@50:** bus 0,813 · car 0,751 · motorcycle 0,671 · truck 0,548. Truck sınıfında görsel benzerlik ve açı çeşitliliği nedeniyle başarı daha sınırlıdır; hata matrisi, arka planla karışan veya kısmen görünen araçların performansı düşürdüğünü gösterir.
+Sınıf bazlı AP@50: bus 0,813 · car 0,751 · motorcycle 0,671 · truck 0,548. Truck sınıfında görsel benzerlik ve açı çeşitliliği nedeniyle başarı daha sınırlıdır; hata matrisi, arka planla karışan veya kısmen görünen araçların performansı düşürdüğünü gösterir.
 
 <p align="center">
   <img src="docs/images/arac_pr_egrisi.png" alt="Precision-Recall eğrisi" width="48%">
@@ -171,11 +167,11 @@ F1, Precision ve Recall'dan `F1 = 2·P·R / (P+R)` ile hesaplanmıştır. Nesne 
 |---|---|---:|---:|---|
 | 1 | YOLOv8s / ~12.000 görsel | 0,617 | 0,419 | Başlangıç doğruluğu sınırlı |
 | 2 | YOLOv8s / ~23.000 görsel | 0,640 | 0,439 | Veri artışı olumlu etki verdi |
-| 3 | YOLOv8m / genişletilmiş veri + augmentasyon | 0,696 | 0,474 | **Final model seçildi** |
+| 3 | YOLOv8m / genişletilmiş veri + augmentasyon | 0,696 | 0,474 | Final model seçildi |
 
 ### Plaka modeli
 
-Tek sınıfta mAP@50 = **0,994**, Precision ve Recall ≈ 0,99. Plaka bölgesi tespiti, araç tespitine göre daha yüksek güvenilirlik gösterir.
+Tek sınıfta mAP@50 = 0,994, Precision ve Recall ≈ 0,99. Plaka bölgesi tespiti, araç tespitine göre daha yüksek güvenilirlik gösterir.
 
 <p align="center">
   <img src="docs/images/plaka_egitim_egrileri.png" alt="Plaka modeli eğitim eğrileri" width="68%">
@@ -184,7 +180,7 @@ Tek sınıfta mAP@50 = **0,994**, Precision ve Recall ≈ 0,99. Plaka bölgesi t
 
 ---
 
-## 🚀 Kurulum
+## Kurulum
 
 ```bash
 git clone https://github.com/furkancmc/TEKNOFEST-5G-Yapay-Zeka.git
@@ -217,7 +213,7 @@ pip install -r requirements.txt
 
 ### Model ağırlıkları
 
-Model ağırlıkları (`.pt`) boyut nedeniyle depoya dahil **edilmemiştir**. Eğitimle üretmek (aşağıdaki [Eğitim](#-kullanım) bölümü) veya hazır ağırlıkları şu konumlara yerleştirmek gerekir:
+Model ağırlıkları (`.pt`) boyut nedeniyle depoya dahil edilmemiştir. Eğitimle üretmek (aşağıdaki [Eğitim](#kullanım) bölümü) veya hazır ağırlıkları şu konumlara yerleştirmek gerekir:
 
 ```
 training_vehicle_model/runs/vehicle_final/yolov8m_final_run/weights/best.pt
@@ -226,7 +222,7 @@ training_plate_model/runs/plate/yolov8s_plate_run/weights/best.pt
 
 ---
 
-## 🎬 Kullanım
+## Kullanım
 
 ### Ana pipeline (takip, hız, risk, 5G uyarı)
 
@@ -271,7 +267,7 @@ Ayrıntılar: [`training_vehicle_model/README.md`](training_vehicle_model/README
 
 ---
 
-## 📁 Çıktı Formatı
+## Çıktı Formatı
 
 Her video için çıktı klasörüne şunlar yazılır:
 
@@ -311,7 +307,7 @@ results_pipeline/
 
 ---
 
-## ⚙️ Yapılandırma ve Risk Skoru
+## Yapılandırma ve Risk Skoru
 
 `traffic_pipeline.py` başındaki sabitlerle ayarlanır:
 
@@ -348,11 +344,11 @@ Risk skoru beş faktörün ağırlıklı toplamıdır:
 
 ---
 
-## 📂 Dosya Yapısı
+## Dosya Yapısı
 
 ```
 5G-Trafik-Izleme/
-├── traffic_pipeline.py        ← ⭐ Ana pipeline (takip, hız, mesafe, şerit, risk, 5G uyarı)
+├── traffic_pipeline.py        ← Ana pipeline (takip, hız, mesafe, şerit, risk, 5G uyarı)
 ├── run_inference.py           ← Yalnızca tespit (takipsiz)
 ├── vehicle_merger.py          ← Araç datasetlerini birleştirir ve sınıfları eşler
 ├── plate_merger.py            ← Plaka datasetlerini birleştirir
@@ -365,7 +361,7 @@ Risk skoru beş faktörün ağırlıklı toplamıdır:
 
 ---
 
-## ⚠️ Sınırlılıklar
+## Sınırlılıklar
 
 - Hız, mesafe ve şerit tabanlı risk analizi kamera kalibrasyonuna bağlıdır; piksel→metre ölçeği araç boyutlarından otomatik tahmin edildiği için sayısal hata ölçümü sahneye göre değişir. Bu katman prototip olarak değerlendirilmelidir.
 - 5G uyarı katmanı gerçek bir ağ üzerinde sınanmamıştır; gecikme değeri simülasyondur.
@@ -373,7 +369,7 @@ Risk skoru beş faktörün ağırlıklı toplamıdır:
 
 ---
 
-## 📚 Kaynakça ve Veri Seti Atıfları
+## Kaynakça ve Veri Seti Atıfları
 
 1. Jocher, G., Chaurasia, A., Qiu, J. (2023). *Ultralytics YOLOv8*. https://github.com/ultralytics/ultralytics
 2. Zhang, Y. vd. (2022). *ByteTrack: Multi-Object Tracking by Associating Every Detection Box*. ECCV. https://arxiv.org/abs/2110.06864

@@ -1,4 +1,4 @@
-# 🔢 Plaka Tespit Modeli — Eğitim
+# Plaka Tespit Modeli — Eğitim
 
 Bu klasör, **YOLOv8s** tabanlı bağımsız plaka tespit modelinin eğitim betiğini içerir. Proje geneli için [ana README](../README.md)'ye bakın.
 
