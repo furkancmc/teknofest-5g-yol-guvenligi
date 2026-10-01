@@ -44,7 +44,7 @@ Bileşenlerin ne kadar doğrulandığı birbirinden farklı, o yüzden ayrı ayr
 | Katman | Bileşen | Durum |
 |---|---|---|
 | Çekirdek | Araç tespiti, plaka tespiti, ByteTrack + Kalman takibi | Ayrılmış değerlendirme setlerinde metriklerle doğrulandı |
-| İleri analiz | Homografi / piksel-metre dönüşümü, hız, mesafe, şerit, yoğunluk, risk skoru | Video üzerinde fonksiyonel olarak çalışıyor; sayısal doğruluk kamera kalibrasyonuna bağlı |
+| İleri analiz | Piksel-metre ölçek dönüşümü (araç boyutlarından otomatik tahmin; raporda homografi / sahne kalibrasyonu olarak geçer), hız, mesafe, şerit, yoğunluk, risk skoru | Video üzerinde fonksiyonel olarak çalışıyor; sayısal doğruluk kamera kalibrasyonuna bağlı |
 | Uyarı | 5G olay aktarımı | Eşik aşımı, zaman damgalı log ve uyarı tasarımı; gecikme alanı (`latency_ms`) simüle edilmiş sabit değerdir, gerçek bir 5G bağlantısı kurulmamıştır |
 
 ---
@@ -213,7 +213,7 @@ pip install -r requirements.txt
 
 ### Model ağırlıkları
 
-Model ağırlıkları (`.pt`) boyut nedeniyle depoya dahil edilmemiştir. Eğitimle üretmek (aşağıdaki [Eğitim](#kullanım) bölümü) veya hazır ağırlıkları şu konumlara yerleştirmek gerekir:
+Model ağırlıkları (`.pt`) depoda ve ayrıca bir yerde paylaşılmamıştır. Pipeline ağırlıkları şu konumlarda arar; aşağıdaki Eğitim bölümündeki adımlarla yeniden üretilebilirler:
 
 ```
 training_vehicle_model/runs/vehicle_final/yolov8m_final_run/weights/best.pt
