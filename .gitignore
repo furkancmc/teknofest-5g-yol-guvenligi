@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Model ağırlıkları (büyük — GitHub Releases veya Git LFS ile paylaşılmalı)
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# Datasetler
+merged_vehicle_dataset/
+merged_plate_dataset/
+plate/
+vehicle/
+subset/
+subset_4class/
+
+# Eğitim çıktıları ve loglar
+runs/
+logs/
+
+# Test videoları ve pipeline çıktıları
+teknofest_test/
+results/
+results_pipeline/
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Paketleme çıktıları
+*.zip
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

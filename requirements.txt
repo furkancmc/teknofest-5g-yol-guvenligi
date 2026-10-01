@@ -1,0 +1,27 @@
+# ============================================================
+# 5G Akıllı Trafik İzleme Sistemi — Python Bağımlılıkları
+# ============================================================
+# Kurulum: pip install -r requirements.txt
+# Python 3.9+ önerilir | CUDA destekli GPU önerilir (CPU ile de çalışır)
+
+# --- Derin Öğrenme / YOLOv8 ---
+ultralytics>=8.1.0         # YOLOv8 + ByteTrack (dahili)
+torch>=2.0.0               # PyTorch (CUDA için torch+cu118 veya torch+cu121 kullanın)
+torchvision>=0.15.0
+
+# --- Görüntü İşleme ---
+opencv-python>=4.8.0       # Video okuma/yazma, Canny, Hough, Optical Flow
+numpy>=1.24.0
+
+# --- Yardımcı ---
+Pillow>=9.0.0              # Görüntü format desteği (ultralytics bağımlısı)
+PyYAML>=6.0                # YAML config dosyaları (dataset yaml)
+tqdm>=4.64.0               # İlerleme çubuğu (ultralytics dahili)
+matplotlib>=3.7.0          # Eğitim grafikleri
+scipy>=1.10.0              # İstatistiksel hesaplamalar (isteğe bağlı)
+
+# --- CUDA ile GPU Hızlandırması (isteğe bağlı ama önerilir) ---
+# CUDA 11.8 için:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+# CUDA 12.1 için:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
